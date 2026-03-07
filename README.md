@@ -5,15 +5,15 @@ Das Programm ermöglicht es, Kundenaufträge zu verwalten, zu bearbeiten und zu 
 
 # Funktionen
 
-Kunden hinzufügen
-Kunden bearbeiten
-Kunden löschen
-Statussystem (Offen / In Arbeit / Fertig)
-Kundensuche
-Filter nach Status
-Einnahmenberechnung
-Statistikübersicht
-Automatische Kundennummern (#0001)
+* Kunden hinzufügen
+* Kunden bearbeiten
+* Kunden löschen
+* Statussystem (Offen / In Arbeit / Fertig)
+* Kundensuche
+* Filter nach Status
+* Einnahmenberechnung
+* Statistikübersicht
+* Automatische Kundennummern (#0001)
 
 # Technologien
 
@@ -31,9 +31,9 @@ Die Anwendung trennt Frontend (GUI) und Backend (Logik & Datenspeicherung), wodu
 
 Kundenverwaltung
 
- main.py (Frontend / GUI)
- backend.py (Logik und Datenverwaltung)
- Kunden.txt (Speicherung der Kundendaten)
+* main.py (Frontend / GUI)
+* backend.py (Logik und Datenverwaltung)
+* Kunden.txt (Speicherung der Kundendaten)
 
 # Starten des Programms
 
