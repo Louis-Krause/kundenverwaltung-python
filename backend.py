@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-
+import csv
 # Liste in der alle Kunden gespeichert werden
 Kunden = []
 
@@ -57,20 +57,18 @@ def speichern():
             # Zeile wird in Datei geschrieben
             datei.write(zeile + "\n")
 
-            print(zeile)
 
 
 def Kundennummer_rechner():
 
     # Wenn noch keine Kunden existieren
     if not Kunden:
-        print("Keine Kunden")
         return 1
 
     # Sucht die größte vorhandene Kundennummer
     groesteId = max(int(k["Kundennummer"]) for k in Kunden)
 
-    # Neue ID = größte ID + 1
+
     NewId = groesteId + 1
 
     return NewId
@@ -92,13 +90,8 @@ def hinzuefuegen(name, gereat, problem, preis, datum, kundennummer):
     # Kunde wird zur Liste hinzugefügt
     Kunden.append(kunde)
 
-    print(kunde)
 
 
-
-# =========================
-# Kunden löschen
-# =========================
 def kunde_loeschen(index):
 
     # Holt den Kunden anhand seines Index
@@ -120,7 +113,6 @@ def kunde_loeschen(index):
     # Änderungen werden gespeichert
     speichern()
 
-
 def kunde_suchen(suchtext):
 
     # Wenn kein Suchtext eingegeben wurde → alle Kunden anzeigen
@@ -134,3 +126,23 @@ def kunde_suchen(suchtext):
         or suchtext.lower() in k["Problem"].lower()
         or suchtext in str(k["Kundennummer"])
     ]
+
+
+def export_csv():
+    with open("Kunden_export.csv", "w", newline="", encoding="utf-8") as datei:
+        writer = csv.writer(datei)
+
+        writer.writerow(["Kundennummer", "Name", "Gerät", "Problem", "Preis", "Status", "Datum"])
+
+        for k in Kunden:
+            writer.writerow([
+                k["Kundennummer"],
+                k["Name"],
+                k["Gerät"],
+                k["Problem"],
+                k["Preis"],
+                k["Status"],
+                k["Datum"]
+            ])
+
+        messagebox.showinfo("Export", "CSV Datei wurde erstellt.")
