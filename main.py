@@ -4,6 +4,7 @@ from tkinter import messagebox
 from datetime import datetime
 
 # Schriftart und Farben für das UI (Dark-Design)
+
 Front = ("Segoe UI", 11)
 BG_MAIN = "#1e1e1e"        # Hintergrund Hauptfenster
 BG_FRAME = "#2a2a2a"       # Hintergrund für Frames
@@ -14,6 +15,7 @@ TEXT_COLOR = "#ffffff"      # Standard-Textfarbe
 ACCENT = "#4c8bf5"          # Auswahlfarbe in der Listbox
 
 # Hauptfenster erstellen und konfigurieren
+
 window = tk.Tk()
 window.geometry("500x500")
 window.title("Kundenverwaltung v1.0")
@@ -240,8 +242,11 @@ def update_search(*args):
     gefiltert = backend.kunde_suchen(suchtext)
 
     listbox.delete(0, tk.END)
-    for k in gefiltert:
-        listbox.insert(tk.END, k["Name"])
+    for K in gefiltert:
+        listbox.insert(
+            tk.END,
+            f"#{int(K['Kundennummer']):04} | {K['Status']} | {K['Name']} - {K['Gerät']}"
+        )
 
 
 # Status des ausgewählten Kunden weiterdrehen
@@ -289,7 +294,7 @@ def statistik():
     Num2 = 0
     Num3 = 0
 
-    Money = sum(float(k["Preis"]) for k in Kunde)
+    Money = sum(float(k["Preis"]) for k in Kunde if k["Status"] == "Fertig")
 
     for K in Kunde:
         if K["Status"] == "Offen":
@@ -316,7 +321,7 @@ def on_leave(e):
     e.widget.configure(bg=BTN_NORMAL)
 
 
-# ===== GUI =====
+#  GUI 
 
 
 # Linker Frame (Kundenliste und Suche)
@@ -459,6 +464,27 @@ StatistikBTN.bind("<Enter>", on_enter)
 StatistikBTN.bind("<Leave>", on_leave)
 
 
+def exportieren():
+    backend.export_csv()
+
+exportBTN = tk.Button(
+    BFrame,
+    text="Export",
+    bg=BTN_NORMAL,
+    fg="white",
+    activebackground=BTN_HOVER,
+    relief="flat",
+    padx=15,
+    pady=8,
+    command=exportieren
+)
+exportBTN.grid(row=1, column=5)
+exportBTN.config(width=20, height=2)
+exportBTN.bind("<Enter>", on_enter)
+exportBTN.bind("<Leave>", on_leave)
+
+
+
 # ===== Funktion: Listbox komplett neu aufbauen =====
 def listbox_update():
     #Löscht die Listbox und füllt sie mit allen Kundene (sortirt nach Datum).
@@ -480,21 +506,29 @@ def anzeigen(event):
         return
 
     index = listbox.curselection()[0]
-    kunde = backend.Kunden[index]
+    text = listbox.get(index)
 
-    if kunde:
-        Kinfo.insert("1.0", f"""
-            Kundennummer:   #{int(kunde['Kundennummer']):04}
+    # Kundennummer aus dem Text holen
+    kundennummer = text.split("|")[0].replace("#", "").strip()
+    kundennummer = int(kundennummer)
 
-            Name:           {kunde["Name"]}
-            Gerät:          {kunde["Gerät"]}
-            Problem:        {kunde["Problem"]}
-            Preis:          {kunde["Preis"]}$
+    # richtigen Kunden finden
+    kunde = next((k for k in backend.Kunden if int(k["Kundennummer"]) == kundennummer), None)
 
-            Status:         {kunde["Status"]}
-            Datum:          {kunde["Datum"]}
-        """)
+    if not kunde:
+        return
 
+    Kinfo.insert("1.0", f"""
+        Kundennummer:   #{int(kunde['Kundennummer']):04}
+
+        Name:           {kunde["Name"]}
+        Gerät:          {kunde["Gerät"]}
+        Problem:        {kunde["Problem"]}
+        Preis:          {kunde["Preis"]}$
+
+        Status:         {kunde["Status"]}
+        Datum:          {kunde["Datum"]}
+    """)
 
 #  Details automatisch aktualisieren
 def anzeigen_auto():
